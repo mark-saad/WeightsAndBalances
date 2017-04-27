@@ -1,10 +1,6 @@
 package com.mark;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class Main {
 
@@ -18,7 +14,7 @@ public class Main {
       // first line, read the count
       line = br.readLine();
       int count = Integer.parseInt(line);
-      HashMap<Integer, Balance> balances = new HashMap<>(count);
+      Balance[] balances = new Balance[count];
 
       //  read the balances and the wights
       int i = 0;
@@ -27,7 +23,7 @@ public class Main {
         // left arm
         if( i%2 == 0){
           currentBalance = new Balance(i/2);
-          balances.put(currentBalance.id, currentBalance);
+          balances[i/2] = currentBalance;
           String[] tokens = line.split(" ");
           currentBalance.leftWeight = Integer.parseInt(tokens[0]);
           currentBalance.leftBalances = new int[tokens.length - 1];
@@ -39,14 +35,21 @@ public class Main {
         else {
           String[] tokens = line.split(" ");
           currentBalance.rightWeight = Integer.parseInt(tokens[0]);
-          currentBalance.righBalances = new int[tokens.length - 1];
+          currentBalance.rightBalances = new int[tokens.length - 1];
           for(int j = 1; j < tokens.length; j++){
-            currentBalance.righBalances[j-1] = Integer.parseInt(tokens[j]);
+            currentBalance.rightBalances[j-1] = Integer.parseInt(tokens[j]);
           }
         }
         i++;
       }
-      // process
+      // process - balance the Balances
+      for(int k = 0; k < count; k++) {
+        if(!balances[k].isBalanced) {
+          balances[k].balanceMyWeights(balances);
+        }
+        System.out.println(balances[k].id + ": " + balances[k].balanceLeft + " " + balances[k].balanceRight);
+      }
+
     } catch (FileNotFoundException e) {
       System.out.println("File not found");
       e.printStackTrace();
